@@ -2,13 +2,23 @@
 <html>
     <head>
         <title>Ammaar's Web Home</title>
+
+        <meta charset="utf-8">
+        <meta name=viewport content="width=device-width, initial-scale=1">
+
+        <meta property="og:site_name" content="Ammaar's Web Home">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://marz619.github.io">
+        <meta property="og:locale" content="en">
+        <meta property="og:title" content="Homepage">
+
         <link rel="stylesheet" type="text/css" href="ammaar.css">
-        <script type="text/javascript" src="animation.js"></script>
     </head>
     <body>
         <div id="content">
             <h1 id="header" onclick="jumpChildren(this, 'div.letter')">Ammaar's Web Home</h1>
         </div>
+
         <script type="text/javascript">
             (function (readyFn) {
                 if (document.readyState !== 'loading'){
@@ -27,5 +37,6 @@
                 // header.onclick = jumpChildren(header, 'div.letter');
             });
         </script>
+        <script type="text/javascript" src="animation.js"></script>
     </body>
 </html>
