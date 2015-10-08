@@ -1,7 +1,31 @@
 <!DOCTYPE html>
 <html>
-<body>
-<h1>Ammaar's page</h1>
-<p>I'm hosted with GitHub Pages.</p>
-</body>
+    <head>
+        <title>Ammaar's Web Home</title>
+        <link rel="stylesheet" type="text/css" href="ammaar.css">
+        <script type="text/javascript" src="animation.js"></script>
+    </head>
+    <body>
+        <div id="content">
+            <h1 id="header" onclick="jumpChildren(this, 'div.letter')">Ammaar's Web Home</h1>
+        </div>
+        <script type="text/javascript">
+            (function (readyFn) {
+                if (document.readyState !== 'loading'){
+                    readyFn();
+                } else {
+                    document.addEventListener('DOMContentLoaded', readyFn);
+                }
+            })(function() {
+                var header = document.querySelector('h1#header');
+                var newHTML = '';
+                header.textContent.split('').forEach(function(l, i) {
+                    var clazz = (l === " ") ? 'space' : 'letter';
+                    newHTML += '<div id="' + (i+1) + '" class="' + clazz +'">' + l + '</div>'
+                });
+                header.innerHTML = newHTML;
+                // header.onclick = jumpChildren(header, 'div.letter');
+            });
+        </script>
+    </body>
 </html>
