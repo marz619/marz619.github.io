@@ -7,7 +7,8 @@
     var seconds = 1;
     var gravity = 0.098;
 
-    var shouldAnimate = 0;
+    // a poor man's sync mutex
+    var animateMutex = 0;
 
     var degDelta = degrees / (fps * seconds);
     var timeout = seconds * second / fps;
@@ -25,22 +26,10 @@
         else return Math.floor(Math.random() * n);
     };
 
-    w.chooseAnimation = function(e, selector) {
-        return function() {
-            if (shouldAnimate === 0) {
-                var r = random(2);
-                // if (r === 0) rotate(e, 0);
-                if (r === 0) rotateChildren(e, selector);
-                // if (r === 2) jump(e, 0);
-                if (r === 1) jumpChildren(e, selector);
-            }
-        };
-    };
-
     w.inc = function(k) {
         if (!animating[k]) {
             animating[k] = true;
-            shouldAnimate += 1;
+            animateMutex++;
             return true;
         }
         return false;
@@ -48,8 +37,25 @@
     w.dec = function(k) {
         if (animating[k]) {
             animating[k] = false;
-            shouldAnimate -= 1;
+            animateMutex--;
         }
+    };
+
+    w.pickAnimation = function(e, selector) {
+        return function() {
+            if (!animateMutex) {
+                switch (random(4)) {
+                    case 0:
+                        rotate(e, 0); break;
+                    case 1:
+                        rotateChildren(e, selector); break;
+                    case 2:
+                        jump(e, 0); break;
+                    case 3:
+                        jumpChildren(e, selector); break;
+                }
+            }
+        };
     };
 
     w.rotate = function(e, i) {
@@ -59,18 +65,17 @@
         var deg = 0;
         var dir = (random() >= 0.5) ? 1 : -1;
         var axis = axes[random(axes.length)];
-        var rot = function() {
+        var rotateFn = function() {
             e.style.transform = "rotate" + axis + "(" + deg + "deg)";
             if (Math.abs(deg) < 360) {
                 deg += degDelta * dir;
-                setTimeout(rot, timeout);
+                setTimeout(rotateFn, timeout);
             } else {
                 dec(k);
                 e.style.transform = "";
             }
         };
-        rot();
-
+        rotateFn();
     };
 
     w.rotateChildren = function(e, selector) {
@@ -100,7 +105,7 @@
         var postJump = false;
         
 
-        var jumper = function() {
+        var jumpFn = function() {
             if (preJump) {
                 if (scale > minScale) {
                     scale -= duration.preJump / ((1 - minScale) * timeout);
@@ -149,9 +154,9 @@
                 dec(k);
                 return;
             }
-            setTimeout(jumper, timeout);
+            setTimeout(jumpFn, timeout);
         };
-        jumper();
+        jumpFn();
     };
 
     w.jumpChildren = function(e, selector) {

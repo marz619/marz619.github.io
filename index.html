@@ -15,8 +15,8 @@
         <link rel="stylesheet" type="text/css" href="ammaar.css">
     </head>
     <body>
-        <div id="content">
-            <h1 id="header" onclick="jumpChildren(this, 'div.letter')">Ammaar's Web Home</h1>
+        <div class="content">
+            <h1 id="header">Ammaar's Web Home</h1>
         </div>
 
         <script type="text/javascript">
@@ -34,7 +34,7 @@
                     newHTML += '<div id="' + (i+1) + '" class="' + clazz +'">' + l + '</div>'
                 });
                 header.innerHTML = newHTML;
-                // header.onclick = jumpChildren(header, 'div.letter');
+                header.onclick = pickAnimation(header, 'div.letter');
             });
         </script>
         <script type="text/javascript" src="animation.js"></script>
