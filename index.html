@@ -15,7 +15,7 @@
         <link rel="stylesheet" type="text/css" href="ammaar.css">
     </head>
     <body>
-        <div class="content">
+        <div class="content" unselectable="on">
             <h1 id="header">Ammaar's Web Home</h1>
         </div>
 
@@ -31,7 +31,7 @@
                 var newHTML = '';
                 header.textContent.split('').forEach(function(l, i) {
                     var clazz = (l === " ") ? 'space' : 'letter';
-                    newHTML += '<div id="' + (i+1) + '" class="' + clazz +'">' + l + '</div>'
+                    newHTML += '<div id="' + (i+1) + '" unselectable="on" class="' + clazz +'">' + l + '</div>'
                 });
                 header.innerHTML = newHTML;
                 header.onclick = pickAnimation(header, 'div.letter');
