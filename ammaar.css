@@ -21,9 +21,11 @@ div.content {
 
 div.letter {
     display: inline-block;
+    user-select: none;
 }
 
 div.space {
     display: inline-block;
     margin:0 8px 8px 0;
+    user-select: none;
 }
