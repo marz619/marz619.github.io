@@ -19,7 +19,7 @@
             <h1 id="header">Ammaar's Web Home</h1>
         </div>
 
-        <script type="text/javascript">
+        <!-- <script type="text/javascript">
             (function (readyFn) {
                 if (document.readyState !== 'loading'){
                     readyFn();
@@ -31,12 +31,14 @@
                 var newHTML = '';
                 header.textContent.split('').forEach(function(l, i) {
                     var clazz = (l === " ") ? 'space' : 'letter';
-                    newHTML += '<div id="' + (i+1) + '" unselectable="on" class="' + clazz +'">' + l + '</div>'
+                    newHTML += '<div id="' + (i+1) + '" unselectable="on" class="' + clazz +'">' + l + '</div>';
                 });
                 header.innerHTML = newHTML;
                 header.onclick = pickAnimation(header, 'div.letter');
             });
-        </script>
+        </script> -->
+
         <script type="text/javascript" src="animation.js"></script>
+        <script type="text/javascript" src="index.js"></script>
     </body>
 </html>

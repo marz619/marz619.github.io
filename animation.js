@@ -1,4 +1,14 @@
 (function(w) {
+
+    // set global Anim object
+    if (w.Anim) {
+        return;
+    }
+
+    // anim global
+    var anim = {};
+
+    // closures
     var animating = {};
     var axes = ['', 'X', 'Y', 'Z'];
     var degrees = 360;
@@ -10,6 +20,7 @@
     // a poor man's sync mutex
     var animateMutex = 0;
 
+    // delta's
     var degDelta = degrees / (fps * seconds);
     var timeout = seconds * second / fps;
 
@@ -26,7 +37,7 @@
         else return Math.floor(Math.random() * n);
     };
 
-    w.inc = function(k) {
+    anim.inc = function(k) {
         if (!animating[k]) {
             animating[k] = true;
             animateMutex++;
@@ -34,33 +45,16 @@
         }
         return false;
     };
-    w.dec = function(k) {
+    anim.dec = function(k) {
         if (animating[k]) {
             animating[k] = false;
             animateMutex--;
         }
     };
 
-    w.pickAnimation = function(e, selector) {
-        return function() {
-            if (!animateMutex) {
-                switch (random(4)) {
-                    case 0:
-                        rotate(e, 0); break;
-                    case 1:
-                        rotateChildren(e, selector); break;
-                    case 2:
-                        jump(e, 0); break;
-                    case 3:
-                        jumpChildren(e, selector); break;
-                }
-            }
-        };
-    };
-
-    w.rotate = function(e, i) {
+    anim.rotate = function(e, i) {
         var k = e + i;
-        if (!inc(k)) return;
+        if (!anim.inc(k)) return;
 
         var deg = 0;
         var dir = (random() >= 0.5) ? 1 : -1;
@@ -71,21 +65,21 @@
                 deg += degDelta * dir;
                 setTimeout(rotateFn, timeout);
             } else {
-                dec(k);
+                anim.dec(k);
                 e.style.transform = "";
             }
         };
         rotateFn();
     };
 
-    w.rotateChildren = function(e, selector) {
+    anim.rotateChildren = function(e, selector) {
         foreach(all(e, selector), rotate);
     };
 
 
-    w.jump = function(e, i) {
+    anim.jump = function(e, i) {
         var k = e + i;
-        if (!inc(k)) return;
+        if (!anim.inc(k)) return;
 
         var height = 0;
         var scale = 1.0;
@@ -151,25 +145,47 @@
                 e.style.transform = "scaleY(" + scale + ")";
             } else {
                 e.style.transform = "";
-                dec(k);
+                anim.dec(k);
                 return;
             }
             setTimeout(jumpFn, timeout);
         };
+
         jumpFn();
     };
 
-    w.jumpChildren = function(e, selector) {
+    anim.jumpChildren = function(e, selector) {
         var children = all(e, selector);
         var offset = second * seconds / children.length / 2;
         var start = 0;
 
         foreach(children, function(c, i) {
             function doo() {
-                jump(c, i);
+                anim.jump(c, i);
             }
             setTimeout(doo, start);
             start += offset;
         });
     };
+
+    anim.pickAnimation = function(e, selector) {
+        return function() {
+            if (!animateMutex) {
+                switch (random(4)) {
+                    case 0:
+                        anim.rotate(e, 0); break;
+                    case 1:
+                        anim.rotateChildren(e, selector); break;
+                    case 2:
+                        anim.jump(e, 0); break;
+                    case 3:
+                        anim.jumpChildren(e, selector); break;
+                }
+            }
+        };
+    };
+
+    // set global object
+    w.Anim = anim;
+
 })(window);
