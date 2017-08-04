@@ -73,7 +73,7 @@
     };
 
     anim.rotateChildren = function(e, selector) {
-        foreach(all(e, selector), rotate);
+        foreach(all(e, selector), anim.rotate);
     };
 
 
