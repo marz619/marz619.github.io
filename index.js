@@ -21,7 +21,7 @@
         header.onclick = Anim.pickAnimation(header, 'div.letter');
 
         // 5 second jump animation interval
-        setInterval(Anim.jumpChildren, 5000, header, 'div.letter')
+        setInterval(Anim.jumpChildren, 3000, header, 'div.letter')
     };
 
     // load

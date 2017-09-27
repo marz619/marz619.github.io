@@ -8,7 +8,7 @@
     // anim global
     var anim = {};
 
-    // closures
+    // global consts
     var animating = {};
     var axes = ['', 'X', 'Y', 'Z'];
     var degrees = 360;
@@ -17,25 +17,12 @@
     var seconds = 1;
     var gravity = 0.098;
 
-    // a poor man's sync mutex
-    var animateMutex = 0;
-
     // delta's
     var degDelta = degrees / (fps * seconds);
     var timeout = seconds * second / fps;
 
-    w.all = function(e, selector) {
-        return e.querySelectorAll(selector);
-    };
-
-    w.foreach = function(arr, f) {
-        Array.prototype.forEach.call(arr, f);
-    };
-
-    w.random = function(n) {
-        if (!n) return Math.random();
-        else return Math.floor(Math.random() * n);
-    };
+    // a poor man's sync mutex
+    var animateMutex = 0;
 
     anim.inc = function(k) {
         if (!animating[k]) {
@@ -45,6 +32,7 @@
         }
         return false;
     };
+
     anim.dec = function(k) {
         if (animating[k]) {
             animating[k] = false;
@@ -75,7 +63,6 @@
     anim.rotateChildren = function(e, selector) {
         foreach(all(e, selector), anim.rotate);
     };
-
 
     anim.jump = function(e, i) {
         var k = e + i;
