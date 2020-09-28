@@ -39,7 +39,7 @@
   const textToDivs = (text) => textToArray(text).map(mkDivFn(spaceOrLetter));
 
   const loader = () => {
-    console.log("loader");
+    console.log("index::loader");
 
     // get the header text content and re-write each to be a div
     var header = d.qs("h1#header");
