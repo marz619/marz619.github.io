@@ -1,178 +1,216 @@
-(function(w) {
+(function (w) {
+  console.log("loading animation.js");
 
-    // set global Anim object
-    if (w.Anim) {
-        return;
+  // set global Anim object
+  if (w.Anim) {
+    return;
+  }
+
+  // _anim global
+  const _anim = {};
+
+  // global consts
+  const _animating = {};
+  const axes = ["", "X", "Y", "Z"];
+  const degrees = 360.0;
+  const fps = 60.0;
+  const second = 1000.0;
+  const seconds = 1.0;  // how long does the animation last?
+  const gravity = 0.196;
+
+  // delta's
+  const degDelta = degrees / (fps * seconds);   // rotation
+  const tickDuration = seconds * second / fps;  // ms
+
+  // console.log(degDelta, tickDuration);
+
+  // poor man's mutex
+  var _animateMutex = 0;
+
+  _anim.inc = function (k) {
+    if (!_animating[k]) {
+      // console.log("increment mutex");
+      _animating[k] = true;
+      _animateMutex++;
+      return true;
     }
+    return false;
+  };
 
-    // anim global
-    var anim = {};
+  _anim.dec = function (k) {
+    if (_animating[k]) {
+      // console.log("decrement mutex");
+      _animating[k] = false;
+      _animateMutex--;
+      return true;
+    }
+    return false;
+  };
 
-    // global consts
-    var animating = {};
-    var axes = ['', 'X', 'Y', 'Z'];
-    var degrees = 360;
-    var fps = 60;
-    var second = 1000;
-    var seconds = 1;
-    var gravity = 0.098;
+  _anim.rotate = function (e, i) {
+    var k = e + i;
+    if (!_anim.inc(k)) return;
 
-    // delta's
-    var degDelta = degrees / (fps * seconds);
-    var timeout = seconds * second / fps;
+    var deg = 0;
+    var dir = (random() >= 0.5) ? 1 : -1;
+    var axis = axes[random(axes.length)];
+    var rotateFn = function () {
+      e.style.transform = "rotate" + axis + "(" + deg + "deg)";
+      if (Math.abs(deg) < degrees) {
+        deg += degDelta * dir;
+        setTimeout(rotateFn, tickDuration);
+      } else {
+        _anim.dec(k);
+        e.style.transform = "";
+      }
+    };
+    rotateFn();
+  };
 
-    // a poor man's sync mutex
-    var animateMutex = 0;
+  _anim.rotateChildren = function (e, selector) {
+    w.foreach(w.all(e, selector), _anim.rotate);
+  };
 
-    anim.inc = function(k) {
-        if (!animating[k]) {
-            animating[k] = true;
-            animateMutex++;
-            return true;
-        }
-        return false;
+  _anim.jump = function (e, i) {
+    var k = e + i;
+    if (!_anim.inc(k)) return;
+
+    var height = 0.0;
+    var scale = 1.0;
+    var minScale = 0.85;
+    var velocity = 3.0;
+
+    // jump states
+    const preJump = Object();
+    const jumping = Object();
+    const falling = Object();
+    const landing = Object();
+    const postJump = Object();
+    const jumpDone = Object();
+
+    const Duration = {
+      preJump: 0.15 * seconds,
+      jumping: 0.375 * seconds,
+      falling: 0.375 * seconds,
+      landing: 0.1 * seconds
     };
 
-    anim.dec = function(k) {
-        if (animating[k]) {
-            animating[k] = false;
-            animateMutex--;
-        }
-    };
+    var jumpState = preJump;
 
-    anim.rotate = function(e, i) {
-        var k = e + i;
-        if (!anim.inc(k)) return;
-
-        var deg = 0;
-        var dir = (random() >= 0.5) ? 1 : -1;
-        var axis = axes[random(axes.length)];
-        var rotateFn = function() {
-            e.style.transform = "rotate" + axis + "(" + deg + "deg)";
-            if (Math.abs(deg) < 360) {
-                deg += degDelta * dir;
-                setTimeout(rotateFn, timeout);
+    var jumpFn = function () {
+      // console.log(jumpState);
+      switch (jumpState) {
+        case preJump:
+          // console.log("preJump");
+          jumpState = function () {
+            if (scale > minScale) {
+              scale -= Duration.preJump / ((1 - minScale) * tickDuration);
+              // console.log(e, scale);
+              e.style.transform = "scaleY(" + scale + ")";
+              return preJump;
             } else {
-                anim.dec(k);
-                e.style.transform = "";
+              scale = 1.0;
+              e.style.transform = "scaleY(" + scale + ")";
+              return jumping;
             }
-        };
-        rotateFn();
-    };
-
-    anim.rotateChildren = function(e, selector) {
-        foreach(all(e, selector), anim.rotate);
-    };
-
-    anim.jump = function(e, i) {
-        var k = e + i;
-        if (!anim.inc(k)) return;
-
-        var height = 0;
-        var scale = 1.0;
-        var minScale = 0.9;
-        var velocity = 4;
-
-        var duration = {
-            preJump: 0.2 * seconds,
-            jump: 0.35 * seconds,
-            fall: 0.35 * seconds,
-            land: 0.1 * seconds
-        };
-        var preJump = true;
-        var jumping = false;
-        var falling = false;
-        var landing = false;
-        var postJump = false;
-        
-
-        var jumpFn = function() {
-            if (preJump) {
-                if (scale > minScale) {
-                    scale -= duration.preJump / ((1 - minScale) * timeout);
-                } else {
-                    scale = 1.0;
-                    preJump = false;
-                    jumping = true;
-                }
-                e.style.transform = "scaleY(" + scale + ")";
-            } else if (jumping) {
-                if (velocity > 0) {
-                    velocity -= duration.jump / (gravity * timeout);
-                    height -= velocity;
-                    e.style.transform = "translateY(" + height + "px)";
-                } else {
-                    jumping = false;
-                    falling = true;
-                }
-            } else if (falling) {
-                if (height < 0) {
-                    velocity -= duration.fall / (gravity * timeout);
-                    height -= velocity;
-                    e.style.transform = "translateY(" + height + "px)";
-                } else {
-                    falling = false;
-                    landing = true;
-                }
-            } else if (landing) {
-                if (scale > minScale) {
-                    scale -= (duration.land / 2) / ((1 - minScale) * timeout);
-                    e.style.transform = "scaleY(" + scale + ")";
-                } else {
-                    landing = false;
-                    postJump = true;
-                }
-            } else if (postJump) {
-                if (scale < 1.0) {
-                    scale += (duration.land / 2) / ((1 - minScale) * timeout);
-                } else {
-                    postJump = false;
-                    scale = 1.0;
-                }
-                e.style.transform = "scaleY(" + scale + ")";
+          }();
+          break;
+        case jumping:
+          // console.log("jumping");
+          jumpState = function () {
+            if (velocity > 0.0) {
+              velocity -= Duration.jumping / (gravity * tickDuration);
+              height -= velocity;
+              e.style.transform = "translateY(" + height + "px)";
+              return jumping
+            }
+            return falling;
+          }();
+          break;
+        case falling:
+          // console.log("falling");
+          jumpState = function () {
+            if (height < 0) {
+              velocity -= Duration.falling / (gravity * tickDuration);
+              height -= velocity;
+              e.style.transform = "translateY(" + height + "px)";
+              return falling;
+            }
+            return landing;
+          }();
+          break;
+        case landing:
+          // console.log("landing");
+          jumpState = function () {
+            if (scale > minScale) {
+              scale -= (Duration.landing / 2) / ((1 - minScale) * tickDuration);
+              e.style.transform = "scaleY(" + scale + ")";
+              return landing;
+            }
+            return postJump;
+          }();
+          break;
+        case postJump:
+          // console.log("postJump");
+          jumpState = function () {
+            if (scale < 1.0) {
+              scale += (Duration.landing / 2) / ((1 - minScale) * tickDuration);
+              e.style.transform = "scaleY(" + scale + ")";
+              return postJump;
             } else {
-                e.style.transform = "";
-                anim.dec(k);
-                return;
+              scale = 1.0;
+              e.style.transform = "scaleY(" + scale + ")";
+              return jumpDone;
             }
-            setTimeout(jumpFn, timeout);
-        };
-
-        jumpFn();
+          }();
+          break;
+        default:
+          // console.log("default");
+          e.style.transform = "";
+          _anim.dec(k)
+          return;
+      }
+      // call this again
+      // console.log("setTimeout(jumpFn, ", tickDuration, ");")
+      setTimeout(jumpFn, tickDuration);
     };
 
-    anim.jumpChildren = function(e, selector) {
-        var children = all(e, selector);
-        var offset = second * seconds / children.length / 2;
-        var start = 0;
+    // execute jump
+    jumpFn();
+  };
 
-        foreach(children, function(c, i) {
-            function doo() {
-                anim.jump(c, i);
-            }
-            setTimeout(doo, start);
-            start += offset;
-        });
+  _anim.jumpChildren = (e, selector) => {
+    var children = w.all(e, selector);
+    var offset = second * seconds / children.length / 2;
+    var start = 0;
+
+    w.foreach(children, function (c, i) {
+      function doIt() {
+        _anim.jump(c, i);
+      }
+      setTimeout(doIt, start);
+      start += offset;
+    });
+  };
+
+  _anim.pickAnimation = function (e, selector) {
+    return function () {
+      if (_animateMutex === 0) {
+        switch (random(3)) {
+          case 0:
+            _anim.rotate(e, 0); break;
+          case 1:
+            _anim.rotateChildren(e, selector); break;
+          case 2:
+            _anim.jump(e, 0); break;
+          case 3:
+            _anim.jumpChildren(e, selector); break;
+        }
+      }
     };
+  };
 
-    anim.pickAnimation = function(e, selector) {
-        return function() {
-            if (!animateMutex) {
-                switch (random(4)) {
-                    case 0:
-                        anim.rotate(e, 0); break;
-                    case 1:
-                        anim.rotateChildren(e, selector); break;
-                    case 2:
-                        anim.jump(e, 0); break;
-                    case 3:
-                        anim.jumpChildren(e, selector); break;
-                }
-            }
-        };
-    };
-
-    // set global object
-    w.Anim = anim;
+  // set global object
+  w.Anim = _anim;
 
 })(window);
