@@ -1,0 +1,56 @@
+==================================================================
+https://keybase.io/ammaar
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://ammaar.ca
+  * I am ammaar (https://keybase.io/ammaar) on keybase.
+  * I have a public key ASB6dvaeYILgh2-_9liv0o7ptTsKQvlbDhqMN3g3SAP19Ao
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0101141e3f232bd5912f8aadb3fef5a324cd0ee7326d3120fddb1ecf2b2b64f1cd0c0a",
+      "host": "keybase.io",
+      "kid": "01207a76f69e6082e0876fbff658afd28ee9b53b0a42f95b0e1a8c3778374803f5f40a",
+      "uid": "d8e14d077b37aa6ed7665619ef535f00",
+      "username": "ammaar"
+    },
+    "merkle_root": {
+      "ctime": 1610683453,
+      "hash": "a44f50e29455d0e7b14cadc5451f566f5fb59a13734889f6663c936f170ba86c33f10b7273453d7ad446b53fba1d42a62d58f496d991ece85f13cd78ffd070c6",
+      "hash_meta": "b0dedaf1b1ab9984506cd4811f6c419e75a2c2ada9778960750448f837222bd0",
+      "seqno": 18753805
+    },
+    "service": {
+      "entropy": "rj182Cw+i8pxBbRbap+DLNOC",
+      "hostname": "ammaar.ca",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "5.5.0"
+  },
+  "ctime": 1610683470,
+  "expire_in": 504576000,
+  "prev": "3b4b7c0a11256ce76fbc2655d1a427f20d0c2b92449c17a9f92859a3fc9c5528",
+  "seqno": 28,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgenb2nmCC4Idvv/ZYr9KO6bU7CkL5Ww4ajDd4N0gD9fQKp3BheWxvYWTESpcCHMQgO0t8ChElbOdvvCZV0aQn8g0MK5JEnBep+ShZo/ycVSjEIB7SG0hQm4aE+O9aRLDt2QKDRvNp7MBdYGPDfExHG7jMAgHCo3NpZ8RAN1DNHU1UkucG8/n7E4Iw5WT//JH49RfMSjSVGqSVW4cIzBWYrSuBSuLDBhtOg1K06lJTaf+i3w5ftuhwDP+fD6hzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIE/rnrFgvR1JfkS4hnk2BjeLUqnWL/qJKU0CITF8V1Zro3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/ammaar
+
+==================================================================
